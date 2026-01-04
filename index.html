@@ -41,20 +41,24 @@ label {
 
 select, input {
     width: 100%;
-    padding: 8px;
-    margin: 6px 0 15px 0;
-    border-radius: 6px;
+    height: 48px;              /* 🔥 jednotná výška */
+    padding: 0 12px;           /* horizontální padding */
+    margin: 6px 0 16px 0;      /* 🔥 stejná mezera všude */
+    border-radius: 8px;
     border: none;
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
 #vysledek {
     background: rgba(255,255,255,0.08);
-    padding: 15px;
-    white-space: pre-line;
-    color: #fff;
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    padding: 14px 16px;
+    border-radius: 6px;
+
+    /* 🔥 TOTO JE KLÍČ */
+    margin: 6px 0 15px 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #vysledek.fade {
@@ -71,20 +75,14 @@ select, input {
 
 .elixir-row {
     display: flex;
-    align-items: center;
     gap: 10px;
 }
 
 .elixir-row img {
-    width: 32px;
     height: 32px;
-    display: block;
-}
-
-.elixir-row select {
-    height: 40px;
-    display: flex;
-    align-items: center;
+    width: 32px;
+    flex-shrink: 0;
+    margin-top: 12px;
 }
 
 /* ===== EKURA BUTTON ===== */
@@ -136,11 +134,27 @@ select, input {
 
 .surovina-row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    padding: 4px 0;
+    padding: 6px 0;
 }
 
+.surovina-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.surovina-left img {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.surovina-right {
+    font-weight: bold;
+    white-space: nowrap;
+}
 .surovina-row img {
     width: 22px;
     height: 22px;
