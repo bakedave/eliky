@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulačka elixírů</title>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LE9YQLBLJQ"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-LE9YQLBLJQ');
+</script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 650px;
+    margin: 40px auto;
+    background: radial-gradient(circle at top, #5b3e1e, #1a1208 70%);
+}
+
+h2 {
+    text-align: center;
+    color: #fff;
+}
+
+.card {
+    background: rgba(0,0,0,0.65);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+label {
+    font-weight: bold;
+    color: #fff;
+}
+
+select, input {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0 15px 0;
+    border-radius: 6px;
+    border: none;
+}
+
+#vysledek {
+    background: rgba(255,255,255,0.08);
+    padding: 15px;
+    white-space: pre-line;
+    color: #fff;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#vysledek.fade {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+.footer {
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 15px;
+}
+
+.elixir-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.elixir-row img {
+    width: 32px;
+    height: 32px;
+}
+
+/* ===== EKURA BUTTON ===== */
+.ekura-btn {
+    display: block;
+    text-align: center;
+    margin-top: 18px;
+    padding: 12px;
+    background: linear-gradient(#ff9b1f, #d97400);
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    box-shadow:
+        inset 0 0 0 1px #ffb347,
+        0 4px 10px rgba(0,0,0,0.6);
+    transition: all 0.25s ease;
+}
+
+.ekura-btn:hover {
+    background: linear-gradient(#ffb347, #ff8c00);
+    box-shadow:
+        0 0 10px rgba(255,165,0,0.9),
+        0 0 22px rgba(255,165,0,0.8),
+        0 0 40px rgba(255,140,0,0.7),
+        inset 0 0 0 1px #ffd27d;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 600px) {
+    body { margin: 0; padding: 10px; }
+    .card { padding: 18px; }
+    h2 { font-size: 22px; }
+    select, input { font-size: 16px; padding: 12px; }
+}
+
+@keyframes shake {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-3px); }
+    40%  { transform: translateX(3px); }
+    60%  { transform: translateX(-3px); }
+    80%  { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+}
+
+.elixir-shake {
+    animation: shake 0.25s ease;
+}
+
+.surovina-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+}
+
+.surovina-row img {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.surovina-nazev {
+    flex: 1;
+}
+
+.surovina-pocet {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.surovina-row {
+    transition: background 0.2s ease, transform 0.2s ease;
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+
+.surovina-row:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(4px);
+}
+</style>
+</head>
+
+<body>
+
+<h2>Kalkulačka elixírů</h2>
+
+<div class="card">
+
+<label>Elixír</label>
+<div class="elixir-row">
+    <img id="elixirIcon" src="rychlost_pohybu_s.png" alt="">
+    <select id="elixir" onchange="nastavVelikosti(); zmenIkonu(); autoSpocitat();">
+        <optgroup label="Klasické">
+            <option value="rychlost_pohybu">Rychlost pohybu</option>
+            <option value="rychlost_utoku">Rychlost útoku</option>
+            <option value="rychlost_kouzel">Rychlost kouzel</option>
+            <option value="utok_magii">Útok magií</option>
+            <option value="kriticky_utok">Kritický útok</option>
+            <option value="prunik">Průnik</option>
+            <option value="zb">ZB</option>
+            <option value="mb">MB</option>
+            <option value="utok">Útok</option>
+            <option value="obrana">Obrana</option>
+        </optgroup>
+        <optgroup label="Statové">
+            <option value="sila">Síla</option>
+            <option value="obratnost">Obratnost</option>
+            <option value="inteligence">Inteligence</option>
+            <option value="vitalita">Vitalita</option>
+        </optgroup>
+    </select>
+</div>
+
+<label>Velikost elixíru</label>
+<select id="velikost"></select>
+
+<label>Počet kusů</label>
+<input type="number" id="kusy" value="1" min="1">
+
+<h3 style="color:white;">Potřebné rostliny</h3>
+<div id="vysledek"></div>
+
+<a class="ekura-btn" href="https://www.ekura.cz/lektvary" target="_blank">
+    Přejít na Ekura.cz – Elixíry
+</a>
+
+<div class="footer">Created by BakeDave and ChatGPT</div>
+</div>
+
+<script>
+/* ===== IKONY ===== */
+const ikony = {
+    rychlost_pohybu: "rychlost_pohybu.png",
+    rychlost_utoku: "rychlost_utoku.png",
+    rychlost_kouzel: "rychlost_kouzel.png",
+    utok_magii: "magie.png",
+    kriticky_utok: "kriticky_utok.png",
+    prunik: "prunik.png",
+    zb: "ZB.png",
+    mb: "MB.png",
+    utok: "utok.png",
+    obrana: "Obrana.png",
+    sila: "sila.png",
+    obratnost: "Obratnost.png",
+    inteligence: "inteligence.png",
+    vitalita: "Vitalita.png"
+};
+
+/* ===== IKONY SUROVIN ===== */
+const surovinyIkony = {
+    "Červená bylina": "cervena_bylina.png",
+    "Modrá bylina": "modra_bylina.png",
+    "Zelená bylina": "zelena_bylina.png",
+    "Fialová bylina": "fialova_bylina.png",
+    "Bílá bylina": "bila_bylina.png",
+
+    "Růžová orchidej": "ruzova_orchidej.png",
+    "Modrá orchidej": "modra_orchidej.png",
+
+    "Bodlák": "bodlak.png",
+    "Broskvový květ": "broskovy_kvet.png",
+    "Datle": "datle.png",
+    "Gango": "gango.png",
+    "Kakikvět": "kakikvet.png",
+    "Moruše": "moruse.png",
+    "Rododendron": "rododendron.png",
+    "Sam-Zi": "sam_zi.png",
+    "Šeřík": "serik.png",
+    "Smetánka": "smetanka.png",
+    "Tue": "tue.png",
+    "Zvonek": "zvonek.png",
+
+    "Yangy": "yang.png"
+};
+
+function zmenIkonu() {
+    let elixir = document.getElementById("elixir").value;
+    const tier = document.getElementById("velikost").value || "S";
+    const img = document.getElementById("elixirIcon");
+
+    // 💥 reset animace
+    img.classList.remove("elixir-shake");
+    void img.offsetWidth; // trik, aby šla animace spustit znovu
+
+    // výjimka pro magii
+    if (elixir === "utok_magii") {
+        elixir = "magie";
+    }
+
+    let suffix = "_s";
+    if (tier === "S+") suffix = "_s1";
+    else if (tier === "M") suffix = "_m";
+    else if (tier === "M+") suffix = "_m1";
+    else if (tier === "L") suffix = "_l";
+    else if (tier === "L+") suffix = "_l1";
+
+    img.src = `${elixir}${suffix}.png`;
+
+    // ✨ SPUŠTĚNÍ ANIMACE
+    img.classList.add("elixir-shake");
+}
+
+/* ===== RECEPTY ===== */
+const recepty = {
+    rychlost_pohybu:{typ:"klasicky",S:{"Šeřík":1},M:{"Sam-Zi":1},L:{"Zelená bylina":1},Lplus:{L:10,"Růžová orchidej":5,"Modrá orchidej":2,"Yangy":2000000}},
+    rychlost_utoku:{typ:"klasicky",S:{"Rododendron":1},M:{"Sam-Zi":1},L:{"Zelená bylina":1},Lplus:{L:10,"Růžová orchidej":2,"Modrá orchidej":5,"Yangy":2000000}},
+    rychlost_kouzel:{typ:"klasicky",S:{"Moruše":1},M:{"Sam-Zi":1},L:{"Zelená bylina":1},Lplus:{L:10,"Růžová orchidej":2,"Modrá orchidej":5,"Yangy":2000000}},
+    utok_magii:{typ:"klasicky",S:{"Moruše":1,"Smetánka":1},M:{"Bodlák":1},L:{"Modrá bylina":1},Lplus:{L:10,"Růžová orchidej":5,"Modrá orchidej":2,"Yangy":2000000}},
+    kriticky_utok:{typ:"klasicky",S:{"Rododendron":1,"Smetánka":1},M:{"Bodlák":1},L:{"Modrá bylina":1},Lplus:{L:10,"Růžová orchidej":2,"Modrá orchidej":5,"Yangy":2000000}},
+    prunik:{typ:"klasicky",S:{"Šeřík":1,"Smetánka":1},M:{"Bodlák":1},L:{"Modrá bylina":1},Lplus:{L:10,"Růžová orchidej":5,"Modrá orchidej":2,"Yangy":2000000}},
+    zb:{typ:"klasicky",S:{"Gango":1,"Tue":1},M:{"Datle":1},L:{"Červená bylina":1},Lplus:{L:10,"Růžová orchidej":2,"Modrá orchidej":5,"Yangy":2000000}},
+    mb:{typ:"klasicky",S:{"Zvonek":1,"Tue":1},M:{"Datle":1},L:{"Červená bylina":1},Lplus:{L:10,"Růžová orchidej":5,"Modrá orchidej":2,"Yangy":2000000}},
+    utok:{typ:"klasicky",S:{"Broskvový květ":1,"Tue":1},M:{"Datle":1},L:{"Červená bylina":1},Lplus:{L:10,"Řůžová orchidej":2,"Modrá orchidej":5,"Yangy":2000000}},
+    obrana:{typ:"klasicky",S:{"Kakikvět":1,"Tue":1},M:{"Datle":1},L:{"Červená bylina":1},Lplus:{L:10,"Růžová orchidej":2,"Modrá orchidej":5,"Yangy":2000000}},
+    sila:{typ:"statovy",S:{"Broskvový květ":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}},
+    obratnost:{typ:"statovy",S:{"Kakikvět":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}},
+    inteligence:{typ:"statovy",S:{"Zvonek":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}},
+    vitalita:{typ:"statovy",S:{"Kořen Gango":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}}
+};
+
+function nastavVelikosti(){
+    const el = document.getElementById("elixir").value;
+    const v = document.getElementById("velikost");
+
+    // 🔐 uložíme aktuálně zvolený tier
+    const puvodniTier = v.value;
+
+    v.innerHTML = "";
+
+    let dostupneTiery = [];
+
+    if (recepty[el].typ === "klasicky") {
+        dostupneTiery = ["S","S+","M","M+","L","L+"];
+    } else {
+        dostupneTiery = ["S","S+","L","L+"];
+    }
+
+    dostupneTiery.forEach(t => v.add(new Option(t, t)));
+
+    // 🔁 pokud původní tier existuje, vrať ho
+    if (dostupneTiery.includes(puvodniTier)) {
+        v.value = puvodniTier;
+    }
+}
+
+
+
+function formatCislo(c){return c.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ");}
+
+function spocitat(){
+    const vysledekDiv = document.getElementById("vysledek");
+    vysledekDiv.classList.add("fade");
+
+    setTimeout(() => {
+        const el=document.getElementById("elixir").value;
+        const tier=document.getElementById("velikost").value;
+        const kusy=parseInt(document.getElementById("kusy").value);
+        const r=recepty[el];
+        const vysl={};
+
+        function add(n,v){vysl[n]=(vysl[n]||0)+v;}
+        function vyrob(t,k){
+    if(t==="S"){
+        for(let i in r.S) add(i,r.S[i]*k);
+    }
+
+    if(t==="M"){
+        vyrob("S",k);
+        for(let i in r.M) add(i,r.M[i]*k);
+    }
+
+    if(t==="L"){
+        vyrob("M",k);
+        for(let i in r.L) add(i,r.L[i]*k);
+    }
+
+    if(t==="S+"){
+        vyrob("S",10*k);
+        for(let i in r.Lplus){
+            if(i!=="L") add(i,r.Lplus[i]*k);
+        }
+    }
+
+    if(t==="M+"){
+        vyrob("M",10*k);
+        for(let i in r.Lplus){
+            if(i!=="L") add(i,r.Lplus[i]*k);
+        }
+    }
+
+    if(t==="L+"){
+        vyrob("L",10*k);
+        for(let i in r.Lplus){
+            if(i!=="L") add(i,r.Lplus[i]*k);
+        }
+    }
+}
+
+
+        vyrob(tier,kusy);
+
+        let out = "";
+
+for (let i in vysl) {
+    const icon = surovinyIkony[i]
+        ? `<img src="${surovinyIkony[i]}" style="width:20px; vertical-align:middle; margin-right:6px;">`
+        : "";
+
+    out += `
+<div class="surovina-row">
+    ${icon}
+    <div class="surovina-nazev">${i}</div>
+    <div class="surovina-pocet">× ${formatCislo(vysl[i])}</div>
+    </div>`;
+}
+
+vysledekDiv.innerHTML = out;
+
+        vysledekDiv.classList.remove("fade");
+    }, 120);
+}
+
+function autoSpocitat(){
+    const kusy = document.getElementById("kusy").value;
+    const velikost = document.getElementById("velikost").value;
+    if(kusy && velikost) spocitat();
+}
+
+document.getElementById("elixir").addEventListener("change", autoSpocitat);
+document.getElementById("velikost").addEventListener("change", autoSpocitat);
+document.getElementById("velikost").addEventListener("change", zmenIkonu);
+document.getElementById("kusy").addEventListener("input", autoSpocitat);
+
+nastavVelikosti();
+zmenIkonu();
+autoSpocitat();
+</script>
+
+</body>
+</html>
