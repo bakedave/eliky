@@ -257,10 +257,8 @@ const surovinyIkony = {
     "Zelená bylina": "zelena_bylina.png",
     "Fialová bylina": "fialova_bylina.png",
     "Bílá bylina": "bila_bylina.png",
-
     "Růžová orchidej": "ruzova_orchidej.png",
     "Modrá orchidej": "modra_orchidej.png",
-
     "Bodlák": "bodlak.png",
     "Broskvový květ": "broskovy_kvet.png",
     "Datle": "datle.png",
@@ -273,23 +271,80 @@ const surovinyIkony = {
     "Smetánka": "smetanka.png",
     "Tue": "tue.png",
     "Zvonek": "zvonek.png",
-
     "Yangy": "yang.png"
 };
 
+/* ===== NPC MAPA ===== */
+const npcMap = {
+    /* --- Baek-Go --- */
+    sila: { S: "Baek-Go", L: "Huahn-So", "S+": "Mág řádu", "L+": "Mág řádu" },
+    inteligence: { S: "Baek-Go", L: "Huahn-So", "S+": "Mág řádu", "L+": "Mág řádu" },
+    obratnost: { S: "Baek-Go", L: "Huahn-So", "S+": "Mág řádu", "L+": "Mág řádu" },
+    vitalita: { S: "Baek-Go", L: "Huahn-So", "S+": "Mág řádu", "L+": "Mág řádu" },
+
+    rychlost_pohybu: {
+        S: "Baek-Go", M: "Baek-Go", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    rychlost_utoku: {
+        S: "Baek-Go", M: "Baek-Go", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    rychlost_kouzel: {
+        S: "Baek-Go", M: "Baek-Go", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    /* --- Yu-Hwan → Huahn-So → Mág řádu --- */
+    utok_magii: {
+        S: "Yu-Hwan", M: "Yu-Hwan", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    kriticky_utok: {
+        S: "Yu-Hwan", M: "Yu-Hwan", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    prunik: {
+        S: "Yu-Hwan", M: "Yu-Hwan", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    utok: {
+        S: "Yu-Hwan", M: "Yu-Hwan", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    obrana: {
+        S: "Yu-Hwan", M: "Yu-Hwan", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    zb: {
+        S: "Yu-Hwan", M: "Yu-Hwan", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    },
+
+    mb: {
+        S: "Yu-Hwan", M: "Yu-Hwan", L: "Huahn-So",
+        "S+": "Mág řádu", "M+": "Mág řádu", "L+": "Mág řádu"
+    }
+};
+
+
+/* ===== ZMĚNA IKONY ===== */
 function zmenIkonu() {
     let elixir = document.getElementById("elixir").value;
     const tier = document.getElementById("velikost").value || "S";
     const img = document.getElementById("elixirIcon");
 
-    // 💥 reset animace
     img.classList.remove("elixir-shake");
-    void img.offsetWidth; // trik, aby šla animace spustit znovu
+    void img.offsetWidth;
 
-    // výjimka pro magii
-    if (elixir === "utok_magii") {
-        elixir = "magie";
-    }
+    if (elixir === "utok_magii") elixir = "magie";
 
     let suffix = "_s";
     if (tier === "S+") suffix = "_s1";
@@ -299,8 +354,6 @@ function zmenIkonu() {
     else if (tier === "L+") suffix = "_l1";
 
     img.src = `${elixir}${suffix}.png`;
-
-    // ✨ SPUŠTĚNÍ ANIMACE
     img.classList.add("elixir-shake");
 }
 
@@ -319,122 +372,93 @@ const recepty = {
     sila:{typ:"statovy",S:{"Broskvový květ":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}},
     obratnost:{typ:"statovy",S:{"Kakikvět":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}},
     inteligence:{typ:"statovy",S:{"Zvonek":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}},
-    vitalita:{typ:"statovy",S:{"Kořen Gango":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}}
+    vitalita:{typ:"statovy",S:{"Gango":1},M:{"Fialová bylina":1},Lplus:{L:6,"Růžová orchidej":2,"Modrá orchidej":2,"Yangy":500000}}
 };
 
-function nastavVelikosti(){
+/* ===== VELIKOSTI ===== */
+function nastavVelikosti() {
     const el = document.getElementById("elixir").value;
     const v = document.getElementById("velikost");
-
-    // 🔐 uložíme aktuálně zvolený tier
     const puvodniTier = v.value;
-
     v.innerHTML = "";
 
-    let dostupneTiery = [];
-
-    if (recepty[el].typ === "klasicky") {
-        dostupneTiery = ["S","S+","M","M+","L","L+"];
-    } else {
-        dostupneTiery = ["S","S+","L","L+"];
-    }
+    const dostupneTiery = recepty[el].typ === "klasicky"
+        ? ["S","S+","M","M+","L","L+"]
+        : ["S","S+","L","L+"];
 
     dostupneTiery.forEach(t => v.add(new Option(t, t)));
 
-    // 🔁 pokud původní tier existuje, vrať ho
-    if (dostupneTiery.includes(puvodniTier)) {
-        v.value = puvodniTier;
-    }
+    if (dostupneTiery.includes(puvodniTier)) v.value = puvodniTier;
+
+    doplnNpcDoTieru();
 }
 
+/* ===== NPC TEXT DO TIERU ===== */
+function doplnNpcDoTieru() {
+    const el = document.getElementById("elixir").value;
+    const select = document.getElementById("velikost");
 
+    [...select.options].forEach(opt => {
+        const tier = opt.value;
+        opt.textContent = npcMap[el]?.[tier]
+            ? `${tier} (${npcMap[el][tier]})`
+            : tier;
+    });
+}
 
+/* ===== VÝPOČET ===== */
 function formatCislo(c){return c.toString().replace(/\B(?=(\d{3})+(?!\d))/g," ");}
 
-function spocitat(){
-    const vysledekDiv = document.getElementById("vysledek");
-    vysledekDiv.classList.add("fade");
+function spocitat() {
+    const el = document.getElementById("elixir").value;
+    const tier = document.getElementById("velikost").value;
+    const kusy = parseInt(document.getElementById("kusy").value);
+    const r = recepty[el];
+    const vysl = {};
 
-    setTimeout(() => {
-        const el=document.getElementById("elixir").value;
-        const tier=document.getElementById("velikost").value;
-        const kusy=parseInt(document.getElementById("kusy").value);
-        const r=recepty[el];
-        const vysl={};
+    function add(n,v){vysl[n]=(vysl[n]||0)+v;}
 
-        function add(n,v){vysl[n]=(vysl[n]||0)+v;}
-        function vyrob(t,k){
-    if(t==="S"){
-        for(let i in r.S) add(i,r.S[i]*k);
-    }
-
-    if(t==="M"){
-        vyrob("S",k);
-        for(let i in r.M) add(i,r.M[i]*k);
-    }
-
-    if(t==="L"){
-        vyrob("M",k);
-        for(let i in r.L) add(i,r.L[i]*k);
-    }
-
-    if(t==="S+"){
-        vyrob("S",10*k);
-        for(let i in r.Lplus){
-            if(i!=="L") add(i,r.Lplus[i]*k);
+    function vyrob(t,k){
+        if(t==="S") for(let i in r.S) add(i,r.S[i]*k);
+        if(t==="M"){ vyrob("S",k); for(let i in r.M) add(i,r.M[i]*k); }
+        if(t==="L"){ vyrob("M",k); for(let i in r.L) add(i,r.L[i]*k); }
+        if(["S+","M+","L+"].includes(t)){
+            vyrob(t[0],10*k);
+            for(let i in r.Lplus) if(i!=="L") add(i,r.Lplus[i]*k);
         }
     }
 
-    if(t==="M+"){
-        vyrob("M",10*k);
-        for(let i in r.Lplus){
-            if(i!=="L") add(i,r.Lplus[i]*k);
-        }
+    vyrob(tier,kusy);
+
+    let out = "";
+    for (let i in vysl) {
+        out += `<div class="surovina-row">
+            ${surovinyIkony[i] ? `<img src="${surovinyIkony[i]}">` : ""}
+            <div class="surovina-nazev">${i}</div>
+            <div class="surovina-pocet">× ${formatCislo(vysl[i])}</div>
+        </div>`;
     }
 
-    if(t==="L+"){
-        vyrob("L",10*k);
-        for(let i in r.Lplus){
-            if(i!=="L") add(i,r.Lplus[i]*k);
-        }
-    }
+    document.getElementById("vysledek").innerHTML = out;
 }
 
+function autoSpocitat(){ spocitat(); }
 
-        vyrob(tier,kusy);
+/* ===== LISTENERY ===== */
+document.getElementById("elixir").addEventListener("change", () => {
+    nastavVelikosti();
+    zmenIkonu();
+    autoSpocitat();
+});
 
-        let out = "";
+document.getElementById("velikost").addEventListener("change", () => {
+    zmenIkonu();
+    autoSpocitat();
+});
 
-for (let i in vysl) {
-    const icon = surovinyIkony[i]
-        ? `<img src="${surovinyIkony[i]}" style="width:20px; vertical-align:middle; margin-right:6px;">`
-        : "";
-
-    out += `
-<div class="surovina-row">
-    ${icon}
-    <div class="surovina-nazev">${i}</div>
-    <div class="surovina-pocet">× ${formatCislo(vysl[i])}</div>
-    </div>`;
-}
-
-vysledekDiv.innerHTML = out;
-
-        vysledekDiv.classList.remove("fade");
-    }, 120);
-}
-
-function autoSpocitat(){
-    const kusy = document.getElementById("kusy").value;
-    const velikost = document.getElementById("velikost").value;
-    if(kusy && velikost) spocitat();
-}
-
-document.getElementById("elixir").addEventListener("change", autoSpocitat);
-document.getElementById("velikost").addEventListener("change", autoSpocitat);
-document.getElementById("velikost").addEventListener("change", zmenIkonu);
 document.getElementById("kusy").addEventListener("input", autoSpocitat);
 
+/* ===== INIT ===== */
 nastavVelikosti();
 zmenIkonu();
 autoSpocitat();
