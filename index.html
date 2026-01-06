@@ -418,15 +418,29 @@ function spocitat() {
 
     function add(n,v){vysl[n]=(vysl[n]||0)+v;}
 
-    function vyrob(t,k){
-        if(t==="S") for(let i in r.S) add(i,r.S[i]*k);
-        if(t==="M"){ vyrob("S",k); for(let i in r.M) add(i,r.M[i]*k); }
-        if(t==="L"){ vyrob("M",k); for(let i in r.L) add(i,r.L[i]*k); }
-        if(["S+","M+","L+"].includes(t)){
-            vyrob(t[0],10*k);
-            for(let i in r.Lplus) if(i!=="L") add(i,r.Lplus[i]*k);
+    function vyrob(t, k) {
+    if (t === "S") {
+        for (let i in r.S) add(i, r.S[i] * k);
+    }
+
+    if (t === "M") {
+        vyrob("S", k);
+        for (let i in r.M) add(i, r.M[i] * k);
+    }
+
+    if (t === "L") {
+        vyrob("M", k);
+        for (let i in r.L) add(i, r.L[i] * k);
+    }
+
+    if (["S+", "M+", "L+"].includes(t)) {
+        const nasobek = r.typ === "statovy" ? 6 : 10;
+        vyrob(t[0], nasobek * k);
+        for (let i in r.Lplus) {
+            if (i !== "L") add(i, r.Lplus[i] * k);
         }
     }
+}
 
     vyrob(tier,kusy);
 
